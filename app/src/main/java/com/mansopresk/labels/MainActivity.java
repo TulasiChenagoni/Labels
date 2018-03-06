@@ -1,5 +1,7 @@
 package com.mansopresk.labels;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.format.DateFormat;
@@ -34,9 +36,13 @@ public class MainActivity extends AppCompatActivity
 
     String countries[] = {"India", "USA", "Australia"};
 
-    String spinner,radio,toggle,switch_btn;
+    String spinner,radio,name,user,pass;
 
     float rating;
+    SharedPreferences sharedpreferences;
+    SharedPreferences.Editor editor;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -115,12 +121,43 @@ public class MainActivity extends AppCompatActivity
                         Toast.LENGTH_SHORT).show();
             }
         });
-    }
+
+        //shared preferences
+
+
+
+
+//        if(editor != null)
+//        {
+//           // name = prefs.getString("username", user);
+//            Intent i = new Intent(this,NavActivity.class);
+//            startActivity(i);
+//        }
+
+        sharedpreferences = getSharedPreferences("details",MODE_PRIVATE);
+        String user = sharedpreferences.getString("username", null);
+        String pass = sharedpreferences.getString("password", null);
+
+        if(user!=null)
+        {
+            Intent i=new Intent(this,NavActivity.class);
+            startActivity(i);
+        }
+
+//        sharedpreferences = getSharedPreferences("userdetails",MODE_PRIVATE);
+//        String uname = sharedpreferences.getString("username",null);
+//        if(uname!=null){
+//            Intent i=new Intent(this,NavActivity.class);
+//            startActivity(i);
+//        }
+
+
+}
 
     public void login(View v)
     {
-        String user = et_user.getText().toString().trim();
-        String pass = et_pass.getText().toString().trim();
+         user = et_user.getText().toString().trim();
+         pass = et_pass.getText().toString().trim();
 
         if(cb.isChecked())
         {
@@ -136,7 +173,18 @@ public class MainActivity extends AppCompatActivity
             }
             else
             {
-                Toast.makeText(this, "Login Success", Toast.LENGTH_SHORT).show();
+                editor = getSharedPreferences("details", MODE_PRIVATE).edit();
+                editor.putString("username", user);
+                editor.putString("password", pass);
+                editor.apply();
+                editor.commit();
+
+                if(sharedpreferences!=null) {
+                    Intent i = new Intent(MainActivity.this, NavActivity.class);
+                    startActivity(i);
+                }
+
+                // Toast.makeText(this, "Login Success", Toast.LENGTH_SHORT).show();
             }
         }
         else
