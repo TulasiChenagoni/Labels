@@ -1,6 +1,8 @@
 package com.mansopresk.labels;
 
 
+import android.graphics.BitmapFactory;
+import android.preference.PreferenceManager;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -22,6 +24,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -41,10 +44,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class NavActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
-{
-    TextView tv_name,tv_email;
+public class NavActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+    TextView tv_name, tv_email;
     ImageView imageView;
+
+    Bitmap immage;
 
     private TabLayout tabLayout;
     private ViewPager viewPager;
@@ -55,19 +59,18 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
 
     Bitmap bit = null;
 
-    String choice[]={"CAMERA","GALLERY"};
+    String choice[] = {"CAMERA", "GALLERY"};
 
-    public static final int CAM_REQ_CODE=123;
-    public static final int GAL_REQ_CODE=321;
+    public static final int CAM_REQ_CODE = 123;
+    public static final int GAL_REQ_CODE = 321;
 
-    public static final int CAM_PERMISSION_ACCESS_CODE=111;
-    public static final String CAM_PERMISSION_NAME[]= {android.Manifest.permission.CAMERA};
-    public static final int GAL_PERMISSION_ACCESS_CODE=222;
-    public static final String GAL_PERMISSION_NAME[]={android.Manifest.permission.READ_EXTERNAL_STORAGE};
+    public static final int CAM_PERMISSION_ACCESS_CODE = 111;
+    public static final String CAM_PERMISSION_NAME[] = {android.Manifest.permission.CAMERA};
+    public static final int GAL_PERMISSION_ACCESS_CODE = 222;
+    public static final String GAL_PERMISSION_NAME[] = {android.Manifest.permission.READ_EXTERNAL_STORAGE};
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nav);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -97,11 +100,11 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        View header=navigationView.getHeaderView(0);
+        View header = navigationView.getHeaderView(0);
 
-        tv_name = (TextView)header.findViewById(R.id.tv_name);
-        tv_email = (TextView)header.findViewById(R.id.tv_email);
-        imageView = (ImageView)header.findViewById(R.id.imageView);
+        tv_name = (TextView) header.findViewById(R.id.tv_name);
+        tv_email = (TextView) header.findViewById(R.id.tv_email);
+        imageView = (ImageView) header.findViewById(R.id.imageView);
 
         prefs = getSharedPreferences("details", MODE_PRIVATE);
 
@@ -109,14 +112,10 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
         String pass = prefs.getString("password", null);
         tv_name.setText(name);
         tv_email.setText(pass);
-        if(prefs!=null)
-        {
-            if (name != null || name != "")
-            {
+        if (prefs != null) {
+            if (name != null || name != "") {
                 tv_name.setText(name);
-            }
-            else
-            {
+            } else {
                 Intent i = new Intent(this, MainActivity.class);
                 Toast.makeText(this, "Logout completely", Toast.LENGTH_SHORT).show();
                 startActivity(i);
@@ -126,30 +125,24 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
     }
 
     @Override
-    public void onBackPressed()
-    {
+    public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START))
-        {
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        }
-        else
-        {
+        } else {
             super.onBackPressed();
         }
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
+    public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.nav, menu);
         return true;
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
+    public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
@@ -169,8 +162,7 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera)
-        {
+        if (id == R.id.nav_camera) {
 
             Fragment1 fragment1 = new Fragment1();
             android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -178,30 +170,21 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
             transaction.addToBackStack(null);
             transaction.commit();
 
-        }
-        else if (id == R.id.nav_gallery)
-        {
+        } else if (id == R.id.nav_gallery) {
             Fragment2 fragment2 = new Fragment2();
             android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.fr1, fragment2);
             transaction.addToBackStack(null);
             transaction.commit();
-        }
-        else if (id == R.id.nav_slideshow)
-        {
+        } else if (id == R.id.nav_slideshow) {
 
-        }
-        else if (id == R.id.nav_manage)
-        {
+        } else if (id == R.id.nav_manage) {
 
         } else if (id == R.id.nav_share) {
 
-        }
-        else if (id == R.id.nav_send) {
+        } else if (id == R.id.nav_send) {
 
-        }
-        else if (id == R.id.nav_logout)
-        {
+        } else if (id == R.id.nav_logout) {
 //            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
 //            getApplicationContext().getSharedPreferences("details", 0).edit().clear().commit();
 //            startActivity(intent);
@@ -210,7 +193,7 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
             editor.clear();
             editor.commit();
 
-            Intent i = new Intent(NavActivity.this,MainActivity.class);
+            Intent i = new Intent(NavActivity.this, MainActivity.class);
             startActivity(i);
 
         }
@@ -221,40 +204,30 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
     }
 
 
-    public void image(View view)
-    {
+    public void image(View view) {
         AlertDialog.Builder adb = new AlertDialog.Builder(this);
-       // adb.setIcon(R.drawable.camera);
+        // adb.setIcon(R.drawable.camera);
         adb.setTitle(" Select One ");
-        adb.setItems(choice, new DialogInterface.OnClickListener()
-        {
+        adb.setItems(choice, new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialogInterface, int i)
-            {
-                switch (i)
-                {
+            public void onClick(DialogInterface dialogInterface, int i) {
+                switch (i) {
                     case 0:
                         int res = ContextCompat.checkSelfPermission(NavActivity.this, android.Manifest.permission.CAMERA);
-                        if (res == PackageManager.PERMISSION_GRANTED)
-                        {
+                        if (res == PackageManager.PERMISSION_GRANTED) {
                             Intent cam = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                             startActivityForResult(cam, CAM_REQ_CODE);
-                        }
-                        else
-                        {
+                        } else {
                             ActivityCompat.requestPermissions(NavActivity.this, CAM_PERMISSION_NAME, CAM_PERMISSION_ACCESS_CODE);
                         }
                         break;
                     case 1:
                         int res1 = ContextCompat.checkSelfPermission(NavActivity.this, android.Manifest.permission.READ_EXTERNAL_STORAGE);
 
-                        if (res1 == PackageManager.PERMISSION_GRANTED)
-                        {
+                        if (res1 == PackageManager.PERMISSION_GRANTED) {
                             Intent gal = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                             startActivityForResult(gal, GAL_REQ_CODE);
-                        }
-                        else
-                        {
+                        } else {
                             ActivityCompat.requestPermissions(NavActivity.this, GAL_PERMISSION_NAME, GAL_PERMISSION_ACCESS_CODE);
                         }
 
@@ -266,22 +239,18 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
-    {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode)
-        {
+        switch (requestCode) {
             case CAM_PERMISSION_ACCESS_CODE:
-                if (CAM_PERMISSION_NAME.equals(permissions[0]) && grantResults[0] == PackageManager.PERMISSION_GRANTED)
-                {
+                if (CAM_PERMISSION_NAME.equals(permissions[0]) && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Intent cam = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                     startActivityForResult(cam, CAM_REQ_CODE);
                 }
                 break;
 
             case GAL_PERMISSION_ACCESS_CODE:
-                if (GAL_PERMISSION_NAME.equals(permissions[0]) && grantResults[0] == PackageManager.PERMISSION_GRANTED)
-                {
+                if (GAL_PERMISSION_NAME.equals(permissions[0]) && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Intent gal = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                     startActivityForResult(gal, GAL_REQ_CODE);
                 }
@@ -290,23 +259,31 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode)
-        {
+        switch (requestCode) {
             case CAM_REQ_CODE:
-                if (resultCode == RESULT_OK)
-                {
+                if (resultCode == RESULT_OK) {
                     Bundle b = data.getExtras();
                     bit = (Bitmap) b.get("data");
                     imageView.setImageBitmap(bit);
+
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    bit.compress(Bitmap.CompressFormat.PNG, 90, stream);
+                    byte[] image1 = stream.toByteArray();
+                    //System.out.println("byte array:"+image);
+                    //final String img_str = "data:image/png;base64,"+ Base64.encodeToString(image, 0);
+                    //System.out.println("string:"+img_str);
+
+                    SharedPreferences preferences = getSharedPreferences("myprefs", MODE_PRIVATE);
+                    SharedPreferences.Editor editor = preferences.edit();
+                    editor.putString("userphoto", encodeTobase64(immage));
+                    editor.commit();
                 }
                 break;
 
             case GAL_REQ_CODE:
-                if (resultCode == RESULT_OK)
-                {
+                if (resultCode == RESULT_OK) {
                     Uri img = data.getData();
                     try {
                         bit = MediaStore.Images.Media.getBitmap(this.getContentResolver(), img);
@@ -314,12 +291,33 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
                         e.printStackTrace();
                     }
                     imageView.setImageBitmap(bit);
+
+                    SharedPreferences preferences = getSharedPreferences("myprefs", MODE_PRIVATE);
+                    SharedPreferences.Editor editor = preferences.edit();
+                    editor.putString("userphoto", encodeTobase64(immage));
+                    editor.commit();
                 }
                 break;
         }
     }
 
+    public static String encodeTobase64(Bitmap immage)
+    {
+        immage = immage;
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        immage.compress(Bitmap.CompressFormat.PNG, 100, baos);
+        byte[] b = baos.toByteArray();
+        String imageEncoded = Base64.encodeToString(b, Base64.DEFAULT);
 
+        Log.d("Image Log:", imageEncoded);
+        return imageEncoded;
+    }
+
+    public static Bitmap decodeBase64(String input) {
+        byte[] decodedByte = Base64.decode(input, 0);
+        return BitmapFactory
+                .decodeByteArray(decodedByte, 0, decodedByte.length);
+    }
 
     private void setupTabIcons() {
         tabLayout.getTabAt(0).setIcon(tabIcons[0]);
@@ -327,6 +325,7 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
         tabLayout.getTabAt(2).setIcon(tabIcons[2]);
         tabLayout.getTabAt(3).setIcon(tabIcons[3]);
     }
+
     private void addTabs(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFrag(new AppleFragment(), "APPLE");
@@ -364,7 +363,7 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
             return mFragmentTitleList.get(position);
         }
     }
-
-
-
 }
+
+
+

@@ -42,7 +42,6 @@ public class MainActivity extends AppCompatActivity
     SharedPreferences sharedpreferences;
     SharedPreferences.Editor editor;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -124,9 +123,6 @@ public class MainActivity extends AppCompatActivity
 
         //shared preferences
 
-
-
-
 //        if(editor != null)
 //        {
 //           // name = prefs.getString("username", user);
@@ -150,7 +146,6 @@ public class MainActivity extends AppCompatActivity
 //            Intent i=new Intent(this,NavActivity.class);
 //            startActivity(i);
 //        }
-
 
 }
 
